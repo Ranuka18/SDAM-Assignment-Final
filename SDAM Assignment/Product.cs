@@ -76,6 +76,37 @@ namespace SDAM_Assignment
 
             return products;
         }
+
+        public static List<Product> LoadProductsBySeller(int sellerId)
+        {
+            List<Product> products = new List<Product>();
+            string query = "SELECT product_id, name, description, price, image_path FROM products WHERE seller_id = @sid";
+
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@sid", sellerId);
+                conn.Open();
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        products.Add(new Product
+                        {
+                            ProductId = reader.GetInt32("product_id"),
+                            Name = reader.GetString("name"),
+                            Description = reader.GetString("description"),
+                            Price = reader.GetDecimal("price"),
+                            ImagePath = reader.GetString("image_path"),
+                            SellerId = sellerId
+                        });
+                    }
+                }
+            }
+
+            return products;
+        }
     }
 }
 

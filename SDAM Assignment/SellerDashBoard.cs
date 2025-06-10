@@ -11,36 +11,38 @@ using MySql.Data.MySqlClient;
 
 namespace SDAM_Assignment
 {
-    public partial class SellerDashBoard: Form
-    {
-
-        int sellerId = 1;
-        public SellerDashBoard()
+        public partial class SellerDashBoard : Form
         {
-            InitializeComponent();
-        }
+            private int sellerId;
 
-        private void SellerDashBoard_Load(object sender, EventArgs e)
-        {
+            public SellerDashBoard(int sellerId)
+            {
+                InitializeComponent();
+                this.sellerId = sellerId;
+            }
 
-        }
+            private void SellerDashBoard_Load(object sender, EventArgs e)
+            {
 
-        private void btnAddProduct_Click(object sender, EventArgs e)
-        {
-            AddProductForm form = new AddProductForm(sellerId);
-            form.ShowDialog();
-        }
+            }
 
-        private void btnViewProducts_Click(object sender, EventArgs e)
-        {
-            ViewProductsForm form = new ViewProductsForm();
-            form.Show();
-        }
+            private void btnAddProduct_Click(object sender, EventArgs e)
+            {
+                AddProductForm form = new AddProductForm(sellerId);
+                form.ShowDialog();
+            }
 
-        private void btnViewOrders_Click(object sender, EventArgs e)
-        {
-            ViewOrdersForm form = new ViewOrdersForm(sellerId);
-            form.ShowDialog();
+            private void btnViewProducts_Click(object sender, EventArgs e)
+            {
+                ViewProductsForm form = new ViewProductsForm();
+                form.Show();
+            }
+
+            private void btnViewOrders_Click(object sender, EventArgs e)
+            {
+                ViewOrdersForm form = new ViewOrdersForm(sellerId);
+                form.ShowDialog();
+            }
         }
-    }
-}
+ }
+
