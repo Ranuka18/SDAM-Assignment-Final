@@ -32,7 +32,7 @@ namespace SDAM_Assignment
             {
                 flowLayoutPanelProducts.Controls.Clear();
 
-                List<Product> products = seller.GetMyProducts(); // ✅ call seller logic
+                List<Product> products = seller.GetMyProducts(); 
 
                 if (products.Count == 0)
                 {
@@ -133,10 +133,10 @@ namespace SDAM_Assignment
             {
                 if (ConfirmDeletion(product.Name))
                 {
-                    if (seller.DeleteProduct(product.ProductId)) // ✅ delegate to seller
+                    if (seller.DeleteProduct(product.ProductId)) 
                     {
                         MessageBox.Show("Product deleted.");
-                        LoadProductsBySeller(); // reload
+                        LoadProductsBySeller(); 
                     }
                     else
                     {
