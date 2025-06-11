@@ -12,13 +12,18 @@ using MySql.Data.MySqlClient;
 
 namespace SDAM_Assignment
 {
+<<<<<<< HEAD
     public partial class LoginForm : Form
+=======
+    public partial class LoginForm: Form
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
     {
         public LoginForm()
         {
             InitializeComponent();
         }
 
+<<<<<<< HEAD
         private void LoginForm_Load(object sender, EventArgs e)
         {
             cmbRole.Items.Add("Admin");
@@ -27,10 +32,13 @@ namespace SDAM_Assignment
             cmbRole.SelectedIndex = 0;
         }
 
+=======
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
         private void btnLogin_Click(object sender, EventArgs e)
         {
             string email = txtEmail.Text.Trim();
             string password = txtPassword.Text.Trim();
+<<<<<<< HEAD
 
             if (cmbRole.SelectedItem == null)
             {
@@ -40,6 +48,11 @@ namespace SDAM_Assignment
 
             string role = cmbRole.SelectedItem.ToString().ToLower();
 
+=======
+            string role = cmbRole.SelectedItem.ToString().ToLower();
+
+
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
             using (var conn = Database.GetConnection())
             {
                 string query = "SELECT * FROM users WHERE email = @em AND password = @pw AND role = @role";
@@ -49,6 +62,7 @@ namespace SDAM_Assignment
                 cmd.Parameters.AddWithValue("@role", role);
 
                 conn.Open();
+<<<<<<< HEAD
                 using (var reader = cmd.ExecuteReader())
                 {
                     if (reader.Read())
@@ -86,6 +100,33 @@ namespace SDAM_Assignment
                     {
                         MessageBox.Show("Invalid login. Check email, password, and role.");
                     }
+=======
+                var reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    int userId = Convert.ToInt32(reader["id"]);
+
+                    if (role == "admin")
+                    {
+                        AdminDashboard adminForm = new AdminDashboard(userId); 
+                        adminForm.Show();
+                    }
+                    else if (role == "seller")
+                    {
+                        SellerDashBoard sellerForm = new SellerDashBoard(userId);
+                        sellerForm.Show();
+                    }
+                    else if (role == "buyer")
+                    {                        
+                        MessageBox.Show("Buyer login successful — route to BuyerDashboardForm.");                      
+                    }
+
+                    this.Hide();
+                }
+                else
+                {
+                    MessageBox.Show("Invalid login. Check email, password, and role.");
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
                 }
             }
         }
@@ -96,4 +137,8 @@ namespace SDAM_Assignment
             regForm.ShowDialog();
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8

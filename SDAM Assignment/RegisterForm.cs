@@ -12,12 +12,20 @@ using MySql.Data.MySqlClient;
 
 namespace SDAM_Assignment
 {
+<<<<<<< HEAD
     public partial class RegisterForm : Form
+=======
+    public partial class RegisterForm: Form
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
     {
         public RegisterForm()
         {
             InitializeComponent();
+<<<<<<< HEAD
             cmbRole.Items.AddRange(new string[] { "admin", "seller", "buyer" });
+=======
+            cmbRole.Items.AddRange(new string[] {"admin", "seller", "buyer" });
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
             cmbRole.SelectedIndex = 0;
         }
 
@@ -30,6 +38,7 @@ namespace SDAM_Assignment
             string password = txtPassword.Text.Trim();
             string confirm = txtConfirm.Text.Trim();
 
+<<<<<<< HEAD
             // ✅ Check for empty fields
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) ||
                 string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(password) ||
@@ -40,6 +49,8 @@ namespace SDAM_Assignment
             }
 
             // ✅ Check if passwords match
+=======
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
             if (password != confirm)
             {
                 MessageBox.Show("Passwords do not match. Please try again.");
@@ -48,6 +59,7 @@ namespace SDAM_Assignment
 
             using (var conn = Database.GetConnection())
             {
+<<<<<<< HEAD
                 try
                 {
                     conn.Open();
@@ -89,3 +101,24 @@ namespace SDAM_Assignment
         }
     }
 }
+=======
+                string query = "INSERT INTO users (name, email, phone_no, role, password) VALUES (@name, @email, @phone, @role, @password)";
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@name", name);
+                cmd.Parameters.AddWithValue("@email", email);
+                cmd.Parameters.AddWithValue("@phone", phone);
+                cmd.Parameters.AddWithValue("@role", role);
+                cmd.Parameters.AddWithValue("@password", password);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+            }
+
+            MessageBox.Show("Account Created Succsessfully!");
+            this.Close();  
+
+        }
+    }
+}
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8

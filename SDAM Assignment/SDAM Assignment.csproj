@@ -59,14 +59,20 @@
     <Compile Include="AddProductForm.Designer.cs">
       <DependentUpon>AddProductForm.cs</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Admin.cs" />
+=======
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
     <Compile Include="AdminDashboard.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AdminDashboard.Designer.cs">
       <DependentUpon>AdminDashboard.cs</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Buyer.cs" />
+=======
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
     <Compile Include="Database.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
@@ -81,7 +87,10 @@
     <Compile Include="RegisterForm.Designer.cs">
       <DependentUpon>RegisterForm.cs</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Seller.cs" />
+=======
+>>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
     <Compile Include="SellerDashBoard.cs">
       <SubType>Form</SubType>
     </Compile>
