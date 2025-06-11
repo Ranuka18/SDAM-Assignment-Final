@@ -1,4 +1,6 @@
-﻿namespace SDAM_Assignment
+﻿using System;
+
+namespace SDAM_Assignment
 {
     partial class SellerDashBoard
     {
@@ -25,7 +27,7 @@
             this.btnAddProduct = new System.Windows.Forms.Button();
             this.btnViewProducts = new System.Windows.Forms.Button();
             this.btnViewOrders = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblWelcome = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnAddProduct
@@ -61,28 +63,26 @@
             this.btnViewOrders.UseVisualStyleBackColor = true;
             this.btnViewOrders.Click += new System.EventHandler(this.btnViewOrders_Click);
             // 
-            // label1
+            // lblWelcome
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(28, 38);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(115, 25);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Welcome !";
+            this.lblWelcome.AutoSize = true;
+            this.lblWelcome.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblWelcome.Location = new System.Drawing.Point(28, 38);
+            this.lblWelcome.Name = "lblWelcome";
+            this.lblWelcome.Size = new System.Drawing.Size(0, 25);
+            this.lblWelcome.TabIndex = 3;
             // 
             // SellerDashBoard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 241);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblWelcome);
             this.Controls.Add(this.btnViewOrders);
             this.Controls.Add(this.btnViewProducts);
             this.Controls.Add(this.btnAddProduct);
             this.Name = "SellerDashBoard";
             this.Text = "SellerDashboard";
-            this.Load += new System.EventHandler(this.SellerDashBoard_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -93,7 +93,9 @@
         private System.Windows.Forms.Button btnAddProduct;
         private System.Windows.Forms.Button btnViewProducts;
         private System.Windows.Forms.Button btnViewOrders;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblWelcome;
+
+        public EventHandler SellerDashBoard_Load { get; private set; }
     }
 }
 

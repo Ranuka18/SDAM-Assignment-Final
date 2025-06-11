@@ -16,32 +16,48 @@ namespace SDAM_Assignment
 {
     public partial class ViewProductsForm : Form
     {
-        public ViewProductsForm()
+        private Seller seller;
+
+        public ViewProductsForm(Seller seller)
         {
             InitializeComponent();
-            LoadProducts();
+            this.seller = seller;
+
+            LoadProductsBySeller();
         }
-        private void LoadProducts()
+
+        private void LoadProductsBySeller()
         {
-            flowLayoutPanelProducts.Controls.Clear();
-
-            List<Product> products = Product.LoadProducts();
-
-            foreach (var product in products)
+            try
             {
-                Panel card = CreateProductCard(
-                    product.Name,
-                    product.Description,
-                    product.Price,
-                    product.ImagePath,
-                    product.ProductId 
-                );
-                flowLayoutPanelProducts.Controls.Add(card);
-            }
+                flowLayoutPanelProducts.Controls.Clear();
 
+                List<Product> products = seller.GetMyProducts(); // ✅ call seller logic
+
+                if (products.Count == 0)
+                {
+                    flowLayoutPanelProducts.Controls.Add(new Label
+                    {
+                        Text = "No products found.",
+                        AutoSize = true,
+                        Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                        ForeColor = Color.Gray
+                    });
+                    return;
+                }
+
+                foreach (var product in products)
+                {
+                    flowLayoutPanelProducts.Controls.Add(CreateProductCard(product));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading products: " + ex.Message);
+            }
         }
 
-        private Panel CreateProductCard(string name, string description, decimal price, string imagePath, int productId)
+        private Panel CreateProductCard(Product product)
         {
             Panel card = new Panel
             {
@@ -49,71 +65,65 @@ namespace SDAM_Assignment
                 Height = 330,
                 BorderStyle = BorderStyle.FixedSingle,
                 Margin = new Padding(10),
-                BackColor = Color.White,
-                AutoScroll = true
+                BackColor = Color.White
             };
-
-            int padding = 10;
-            int currentTop = padding;
 
             PictureBox picture = new PictureBox
             {
                 Width = 180,
                 Height = 150,
-                Left = padding,
-                Top = currentTop,
+                Top = 10,
+                Left = 10,
                 SizeMode = PictureBoxSizeMode.StretchImage
             };
 
-            if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+            if (!string.IsNullOrEmpty(product.ImagePath) && File.Exists(product.ImagePath))
             {
-                try { picture.Image = Image.FromFile(imagePath); }
-                catch { /* handle broken image */ }
+                try
+                {
+                    picture.Image = Image.FromFile(product.ImagePath);
+                }
+                catch
+                {
+                    picture.Image = null;
+                }
             }
-
-            currentTop = picture.Bottom + 5;
 
             Label lblName = new Label
             {
-                Text = name,
-                Top = currentTop,
-                Left = padding,
+                Text = product.Name,
+                Top = picture.Bottom + 5,
+                Left = 10,
                 Width = 180,
                 Font = new Font("Segoe UI", 10, FontStyle.Bold)
             };
 
-            currentTop = lblName.Bottom + 5;
-
             Label lblDesc = new Label
             {
-                Text = description,
-                Top = currentTop,
-                Left = padding,
+                Text = product.Description,
+                Top = lblName.Bottom + 5,
+                Left = 10,
                 Width = 180,
                 Height = 40,
                 AutoEllipsis = true
             };
 
-            currentTop = lblDesc.Bottom + 5;
-
             Label lblPrice = new Label
             {
-                Text = $"${price:F2}",
-                Top = currentTop,
-                Left = padding,
+                Text = $"Rs. {product.Price:F2}",
+                Top = lblDesc.Bottom + 5,
+                Left = 10,
                 Width = 180,
                 ForeColor = Color.Green,
                 Font = new Font("Segoe UI", 10, FontStyle.Bold)
             };
-
-            currentTop = lblPrice.Bottom + 10;
 
             Button btnDelete = new Button
             {
                 Text = "Delete",
                 Width = 100,
                 Height = 30,
-                Top = currentTop,
+                Top = lblPrice.Bottom + 10,
                 Left = (card.Width - 100) / 2,
                 BackColor = Color.IndianRed,
                 ForeColor = Color.White
@@ -121,15 +131,20 @@ namespace SDAM_Assignment
 
             btnDelete.Click += (s, e) =>
             {
-                var result = MessageBox.Show("Are you sure you want to delete this product?", "Confirm", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
+                if (ConfirmDeletion(product.Name))
                 {
-                    DeleteProduct(productId);
-                    LoadProducts(); // refresh
+                    if (seller.DeleteProduct(product.ProductId)) // ✅ delegate to seller
+                    {
+                        MessageBox.Show("Product deleted.");
+                        LoadProductsBySeller(); // reload
+                    }
+                    else
+                    {
+                        MessageBox.Show("Delete failed.");
+                    }
                 }
             };
 
-            // Add controls to the card
             card.Controls.Add(picture);
             card.Controls.Add(lblName);
             card.Controls.Add(lblDesc);
@@ -139,19 +154,12 @@ namespace SDAM_Assignment
             return card;
         }
 
-
-        private void DeleteProduct(int productId)
+        private bool ConfirmDeletion(string productName)
         {
-            using (var conn = Database.GetConnection())
-            {
-                string query = "DELETE FROM products WHERE product_id = @id";
-                MySqlCommand cmd = new MySqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@id", productId);
-                conn.Open();
-                cmd.ExecuteNonQuery();
-            }
-
-            MessageBox.Show("Product deleted successfully.");
+            return MessageBox.Show($"Are you sure you want to delete '{productName}'?",
+                                   "Confirm Deletion",
+                                   MessageBoxButtons.YesNo,
+                                   MessageBoxIcon.Question) == DialogResult.Yes;
         }
     }
 }

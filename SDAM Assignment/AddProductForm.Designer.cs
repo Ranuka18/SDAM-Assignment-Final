@@ -1,4 +1,6 @@
-﻿namespace SDAM_Assignment
+﻿using System;
+
+namespace SDAM_Assignment
 {
     partial class AddProductForm
     {
@@ -155,6 +157,11 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

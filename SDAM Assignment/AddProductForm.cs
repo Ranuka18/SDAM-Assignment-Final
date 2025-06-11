@@ -11,18 +11,20 @@ using MySql.Data.MySqlClient;
 
 namespace SDAM_Assignment
 {
-    public partial class AddProductForm: Form
+    public partial class AddProductForm : Form
     {
-        string imagePath = "";
-        int sellerId;
+        private string imagePath = "";
+        private Seller seller;
+
         public AddProductForm(int sellerId)
         {
             InitializeComponent();
-            this.sellerId = sellerId;
+            this.seller = Seller.GetSellerById(sellerId);
 
             btnUploadImage.Click += btnUploadImage_Click;
             btnSave.Click += btnSave_Click;
         }
+
         private void btnUploadImage_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -32,39 +34,40 @@ namespace SDAM_Assignment
                 pictureBox1.Image = Image.FromFile(imagePath);
             }
         }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
-            try
+            string name = txtName.Text.Trim();
+            string desc = txtDescription.Text.Trim();
+            string priceStr = txtPrice.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(desc) || string.IsNullOrWhiteSpace(priceStr))
             {
-                Product product = new Product
-                {
-                    SellerId = sellerId,
-                    Name = txtName.Text,
-                    Description = txtDescription.Text,
-                    Price = Convert.ToDecimal(txtPrice.Text),
-                    ImagePath = imagePath
-                };
+                MessageBox.Show("Please fill all fields.");
+                return;
+            }
 
-                product.Save_btn();
-                MessageBox.Show("Product added successfully!");
+            if (!decimal.TryParse(priceStr, out decimal price))
+            {
+                MessageBox.Show("Price must be a number.");
+                return;
+            }
 
-                
-                txtName.Text = "";
-                txtDescription.Text = "";
-                txtPrice.Text = "";
+            bool result = seller.AddProduct(name, desc, price, imagePath);
+
+            if (result)
+            {
+                MessageBox.Show("Product added successfully.");
+                txtName.Clear();
+                txtDescription.Clear();
+                txtPrice.Clear();
                 pictureBox1.Image = null;
                 imagePath = "";
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("Error: " + ex.Message);
+                MessageBox.Show("Failed to add product.");
             }
-        }
-
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

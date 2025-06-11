@@ -16,7 +16,7 @@ namespace SDAM_Assignment
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SellerDashBoard());
+            Application.Run(new LoginForm());
         }
     }
 }
