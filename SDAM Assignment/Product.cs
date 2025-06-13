@@ -66,6 +66,64 @@ namespace SDAM_Assignment
             return products;
         }
 
+        public static List<Product> LoadAll()
+        {
+            List<Product> products = new List<Product>();
+            string query = "SELECT * FROM products";
+
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        products.Add(new Product
+                        {
+                            ProductId = Convert.ToInt32(reader["product_id"]),
+                            SellerId = Convert.ToInt32(reader["seller_id"]),
+                            Name = reader["name"].ToString(),
+                            Description = reader["description"].ToString(),
+                            Price = Convert.ToDecimal(reader["price"]),
+                            ImagePath = reader["image_path"].ToString()
+                        });
+                    }
+                }
+            }
+
+            return products;
+        }
+
+        public static Product GetById(int productId)
+        {
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                string query = "SELECT * FROM products WHERE product_id = @id";
+                using (var cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", productId);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Product
+                            {
+                                ProductId = Convert.ToInt32(reader["product_id"]),
+                                Name = reader["name"].ToString(),
+                                Description = reader["description"].ToString(),
+                                Price = Convert.ToDecimal(reader["price"]),
+                                ImagePath = reader["image_path"].ToString()
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
         public static bool Delete(int productId)
         {
             string query = "DELETE FROM products WHERE product_id = @id";
@@ -78,21 +136,30 @@ namespace SDAM_Assignment
             }
         }
 
-        public bool Update()
+        public static bool Update(Product product)
         {
-            string query = "UPDATE products SET name = @name, description = @desc, price = @price, image_path = @img " +
-                           "WHERE product_id = @id";
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 conn.Open();
+                string query = @"UPDATE products 
+                         SET name = @name, price = @price, description = @description, image_path = @imagePath 
+                         WHERE product_id = @id";
+
                 MySqlCommand cmd = new MySqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@id", ProductId);
-                cmd.Parameters.AddWithValue("@name", Name);
-                cmd.Parameters.AddWithValue("@desc", Description);
-                cmd.Parameters.AddWithValue("@price", Price);
-                cmd.Parameters.AddWithValue("@img", ImagePath);
+                cmd.Parameters.AddWithValue("@name", product.Name);
+                cmd.Parameters.AddWithValue("@price", product.Price);
+                cmd.Parameters.AddWithValue("@description", product.Description);
+                cmd.Parameters.AddWithValue("@imagePath", product.ImagePath);
+                cmd.Parameters.AddWithValue("@id", product.ProductId);
+
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
+
+        public bool Update()
+        {
+            return Product.Update(this);
+        }
+
     }
 }

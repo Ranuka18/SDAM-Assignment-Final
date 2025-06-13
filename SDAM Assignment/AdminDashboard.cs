@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
 {
@@ -16,6 +17,8 @@ namespace SDAM_Assignment
         public AdminDashboard(Admin admin)
         {
             InitializeComponent();
+            FormStyler.ApplyTheme(this);
+
             currentAdmin = admin;
         }
 
@@ -27,14 +30,20 @@ namespace SDAM_Assignment
 
         private void btnViewBuyers_Click(object sender, EventArgs e)
         {
-            ViewBuyers form = new ViewBuyers();
+            AdminViewBuyersForm form = new AdminViewBuyersForm();
             form.ShowDialog();
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
-            this.Close();
-            Application.Restart();
+            DialogResult result = MessageBox.Show("Are you sure you want to logout?", "Confirm Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                this.Hide();
+                LoginForm login = new LoginForm();
+                login.Show();
+            }
         }
     }
 }

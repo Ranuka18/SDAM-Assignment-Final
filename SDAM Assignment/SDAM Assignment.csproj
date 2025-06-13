@@ -59,27 +59,78 @@
     <Compile Include="AddProductForm.Designer.cs">
       <DependentUpon>AddProductForm.cs</DependentUpon>
     </Compile>
-<<<<<<< HEAD
+    <Compile Include="AddReviewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddReviewForm.Designer.cs">
+      <DependentUpon>AddReviewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Admin.cs" />
-=======
->>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
     <Compile Include="AdminDashboard.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AdminDashboard.Designer.cs">
       <DependentUpon>AdminDashboard.cs</DependentUpon>
     </Compile>
-<<<<<<< HEAD
+    <Compile Include="AdminViewReviewsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdminViewReviewsForm.Designer.cs">
+      <DependentUpon>AdminViewReviewsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BrowseProductsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BrowseProductsForm.Designer.cs">
+      <DependentUpon>BrowseProductsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Buyer.cs" />
-=======
->>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
+    <Compile Include="BuyerDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BuyerDashboard.Designer.cs">
+      <DependentUpon>BuyerDashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BuyerOrdersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BuyerOrdersForm.Designer.cs">
+      <DependentUpon>BuyerOrdersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CancelReasonForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CancelReasonForm.Designer.cs">
+      <DependentUpon>CancelReasonForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CartForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CartForm.Designer.cs">
+      <DependentUpon>CartForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CartItem.cs" />
+    <Compile Include="CheckoutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CheckoutForm.Designer.cs">
+      <DependentUpon>CheckoutForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Database.cs" />
+    <Compile Include="EditProductForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditProductForm.Designer.cs">
+      <DependentUpon>EditProductForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\FormStyler.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Order.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="RegisterForm.cs">
       <SubType>Form</SubType>
@@ -87,10 +138,8 @@
     <Compile Include="RegisterForm.Designer.cs">
       <DependentUpon>RegisterForm.cs</DependentUpon>
     </Compile>
-<<<<<<< HEAD
+    <Compile Include="Review.cs" />
     <Compile Include="Seller.cs" />
-=======
->>>>>>> c81b4e6329e6483efa063ea1a35f4b70757d01e8
     <Compile Include="SellerDashBoard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,12 +154,18 @@
     <Compile Include="SellerDetailsForm.Designer.cs">
       <DependentUpon>SellerDetailsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="User.cs" />
-    <Compile Include="ViewBuyers.cs">
+    <Compile Include="SellerOrdersForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ViewBuyers.Designer.cs">
-      <DependentUpon>ViewBuyers.cs</DependentUpon>
+    <Compile Include="SellerOrdersForm.Designer.cs">
+      <DependentUpon>SellerOrdersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="User.cs" />
+    <Compile Include="AdminViewBuyersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdminViewBuyersForm.Designer.cs">
+      <DependentUpon>AdminViewBuyersForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewOrdersForm.cs">
       <SubType>Form</SubType>
@@ -124,6 +179,12 @@
     <Compile Include="ViewProductsForm.Designer.cs">
       <DependentUpon>ViewProductsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewReviewsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewReviewsForm.Designer.cs">
+      <DependentUpon>ViewReviewsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewSellers.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,8 +194,35 @@
     <EmbeddedResource Include="AddProductForm.resx">
       <DependentUpon>AddProductForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="AddReviewForm.resx">
+      <DependentUpon>AddReviewForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AdminDashboard.resx">
       <DependentUpon>AdminDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AdminViewReviewsForm.resx">
+      <DependentUpon>AdminViewReviewsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BrowseProductsForm.resx">
+      <DependentUpon>BrowseProductsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BuyerDashboard.resx">
+      <DependentUpon>BuyerDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BuyerOrdersForm.resx">
+      <DependentUpon>BuyerOrdersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CancelReasonForm.resx">
+      <DependentUpon>CancelReasonForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CartForm.resx">
+      <DependentUpon>CartForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckoutForm.resx">
+      <DependentUpon>CheckoutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditProductForm.resx">
+      <DependentUpon>EditProductForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
@@ -157,15 +245,27 @@
     <EmbeddedResource Include="SellerDetailsForm.resx">
       <DependentUpon>SellerDetailsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SellerOrdersForm.resx">
+      <DependentUpon>SellerOrdersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AdminViewBuyersForm.resx">
+      <DependentUpon>AdminViewBuyersForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ViewOrdersForm.resx">
       <DependentUpon>ViewOrdersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ViewProductsForm.resx">
       <DependentUpon>ViewProductsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ViewReviewsForm.resx">
+      <DependentUpon>ViewReviewsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ViewSellers.resx">
       <DependentUpon>ViewSellers.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -175,9 +275,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

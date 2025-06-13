@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using System.IO;
 using System.Data.Common;
+using SDAM_Assignment.Helpers;
 
 
 namespace SDAM_Assignment
@@ -21,8 +22,8 @@ namespace SDAM_Assignment
         public ViewProductsForm(Seller seller)
         {
             InitializeComponent();
+            FormStyler.ApplyTheme(this);
             this.seller = seller;
-
             LoadProductsBySeller();
         }
 
@@ -31,8 +32,7 @@ namespace SDAM_Assignment
             try
             {
                 flowLayoutPanelProducts.Controls.Clear();
-
-                List<Product> products = seller.GetMyProducts(); 
+                List<Product> products = seller.GetMyProducts();
 
                 if (products.Count == 0)
                 {
@@ -62,7 +62,8 @@ namespace SDAM_Assignment
             Panel card = new Panel
             {
                 Width = 200,
-                Height = 330,
+                Height = 360,
+                Tag = "NoTheme",
                 BorderStyle = BorderStyle.FixedSingle,
                 Margin = new Padding(10),
                 BackColor = Color.White
@@ -118,13 +119,32 @@ namespace SDAM_Assignment
                 Font = new Font("Segoe UI", 10, FontStyle.Bold)
             };
 
+            Button btnEdit = new Button
+            {
+                Text = "Edit",
+                Width = 80,
+                Height = 30,
+                Top = lblPrice.Bottom + 10,
+                Left = 10,
+                BackColor = Color.LightBlue
+            };
+
+            btnEdit.Click += (s, e) =>
+            {
+                EditProductForm editForm = new EditProductForm(product);
+                if (editForm.ShowDialog() == DialogResult.OK)
+                {
+                    LoadProductsBySeller(); 
+                }
+            };
+
             Button btnDelete = new Button
             {
                 Text = "Delete",
-                Width = 100,
+                Width = 80,
                 Height = 30,
                 Top = lblPrice.Bottom + 10,
-                Left = (card.Width - 100) / 2,
+                Left = 100,
                 BackColor = Color.IndianRed,
                 ForeColor = Color.White
             };
@@ -133,10 +153,10 @@ namespace SDAM_Assignment
             {
                 if (ConfirmDeletion(product.Name))
                 {
-                    if (seller.DeleteProduct(product.ProductId)) 
+                    if (seller.DeleteProduct(product.ProductId))
                     {
                         MessageBox.Show("Product deleted.");
-                        LoadProductsBySeller(); 
+                        LoadProductsBySeller();
                     }
                     else
                     {
@@ -145,10 +165,28 @@ namespace SDAM_Assignment
                 }
             };
 
+            Button btnViewReviews = new Button
+            {
+                Text = "View Reviews",
+                Width = 100,
+                Height = 30,
+                Top = btnDelete.Bottom + 5,
+                Left = (card.Width - 100) / 2,
+                BackColor = Color.LightBlue
+            };
+
+            btnViewReviews.Click += (s, e) =>
+            {
+                ViewReviewsForm reviewsForm = new ViewReviewsForm(product.ProductId);
+                reviewsForm.ShowDialog();
+            };
+
             card.Controls.Add(picture);
             card.Controls.Add(lblName);
             card.Controls.Add(lblDesc);
             card.Controls.Add(lblPrice);
+            card.Controls.Add(btnEdit);
+            card.Controls.Add(btnViewReviews);
             card.Controls.Add(btnDelete);
 
             return card;
@@ -163,7 +201,6 @@ namespace SDAM_Assignment
         }
     }
 }
-
 
 
 

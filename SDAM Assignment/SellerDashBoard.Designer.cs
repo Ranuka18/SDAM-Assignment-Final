@@ -28,6 +28,7 @@ namespace SDAM_Assignment
             this.btnViewProducts = new System.Windows.Forms.Button();
             this.btnViewOrders = new System.Windows.Forms.Button();
             this.lblWelcome = new System.Windows.Forms.Label();
+            this.btnLogout = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnAddProduct
@@ -72,11 +73,23 @@ namespace SDAM_Assignment
             this.lblWelcome.Size = new System.Drawing.Size(0, 25);
             this.lblWelcome.TabIndex = 3;
             // 
+            // btnLogout
+            // 
+            this.btnLogout.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLogout.Location = new System.Drawing.Point(610, 33);
+            this.btnLogout.Name = "btnLogout";
+            this.btnLogout.Size = new System.Drawing.Size(163, 36);
+            this.btnLogout.TabIndex = 4;
+            this.btnLogout.Text = "Logout";
+            this.btnLogout.UseVisualStyleBackColor = true;
+            this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
+            // 
             // SellerDashBoard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 241);
+            this.Controls.Add(this.btnLogout);
             this.Controls.Add(this.lblWelcome);
             this.Controls.Add(this.btnViewOrders);
             this.Controls.Add(this.btnViewProducts);
@@ -94,6 +107,7 @@ namespace SDAM_Assignment
         private System.Windows.Forms.Button btnViewProducts;
         private System.Windows.Forms.Button btnViewOrders;
         private System.Windows.Forms.Label lblWelcome;
+        private System.Windows.Forms.Button btnLogout;
 
         public EventHandler SellerDashBoard_Load { get; private set; }
     }

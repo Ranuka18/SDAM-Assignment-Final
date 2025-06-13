@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
 {
@@ -19,6 +20,7 @@ namespace SDAM_Assignment
         public SellerDashBoard(int sellerId)
         {
             InitializeComponent();
+            FormStyler.ApplyTheme(this);
             this.sellerId = sellerId;
             this.seller = Seller.GetSellerById(sellerId);
 
@@ -43,8 +45,20 @@ namespace SDAM_Assignment
 
         private void btnViewOrders_Click(object sender, EventArgs e)
         {
-            ViewOrdersForm form = new ViewOrdersForm(sellerId);
-            form.ShowDialog();
+            SellerOrdersForm ordersForm = new SellerOrdersForm(this.seller);
+            ordersForm.Show();
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to logout?", "Confirm Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                this.Hide();
+                LoginForm login = new LoginForm();
+                login.Show();
+            }
         }
     }
 }

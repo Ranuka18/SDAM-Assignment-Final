@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
 {
@@ -17,6 +18,7 @@ namespace SDAM_Assignment
         public SellerDetailsForm(int sellerId)
         {
             InitializeComponent();
+            FormStyler.ApplyTheme(this);
             this.sellerId = sellerId;
             LoadSellerProducts();
         }
@@ -40,6 +42,8 @@ namespace SDAM_Assignment
             {
                 Width = 200,
                 Height = 300,
+                Tag = "NoTheme",
+                BackColor = Color.WhiteSmoke,
                 BorderStyle = BorderStyle.FixedSingle,
                 Margin = new Padding(10)
             };
@@ -86,6 +90,24 @@ namespace SDAM_Assignment
                 ForeColor = Color.Green,
                 Font = new Font("Segoe UI", 10, FontStyle.Bold)
             };
+
+            Button btnViewReviews = new Button
+            {
+                Text = "View Reviews",
+                Width = 100,
+                Height = 30,
+                Top = lblPrice.Bottom + 5,
+                Left = 10,
+                BackColor = Color.LightGray
+            };
+
+            btnViewReviews.Click += (s, e) =>
+            {
+                AdminViewReviewsForm reviewForm = new AdminViewReviewsForm(product.ProductId); 
+                reviewForm.ShowDialog();
+            };
+
+            card.Controls.Add(btnViewReviews);
 
             card.Controls.Add(picture);
             card.Controls.Add(lblName);

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
 {
@@ -17,6 +18,7 @@ namespace SDAM_Assignment
         public LoginForm()
         {
             InitializeComponent();
+            FormStyler.ApplyTheme(this);
         }
 
         private void LoginForm_Load(object sender, EventArgs e)

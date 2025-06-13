@@ -100,6 +100,7 @@ namespace SDAM_Assignment
             // 
             // pictureBox1
             // 
+            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox1.Location = new System.Drawing.Point(239, 315);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(219, 195);
@@ -161,7 +162,7 @@ namespace SDAM_Assignment
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            // You can handle real-time text input changes here
         }
 
         #endregion

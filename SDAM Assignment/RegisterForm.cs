@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
 {
@@ -17,8 +18,9 @@ namespace SDAM_Assignment
         public RegisterForm()
         {
             InitializeComponent();
-            cmbRole.Items.AddRange(new string[] { "admin", "seller", "buyer" });
-            cmbRole.SelectedIndex = 0;
+            FormStyler.ApplyTheme(this);
+            cmbRegisterRole.Items.AddRange(new string[] { "Seller", "Buyer" });
+            cmbRegisterRole.SelectedIndex = 0;
         }
 
         private void btnRegister_Click(object sender, EventArgs e)
@@ -26,7 +28,7 @@ namespace SDAM_Assignment
             string name = txtName.Text.Trim();
             string email = txtEmail.Text.Trim();
             string phone = txtPhone.Text.Trim();
-            string role = cmbRole.SelectedItem.ToString().ToLower();
+            string role = cmbRegisterRole.SelectedItem.ToString().ToLower();
             string password = txtPassword.Text.Trim();
             string confirm = txtConfirm.Text.Trim();
 

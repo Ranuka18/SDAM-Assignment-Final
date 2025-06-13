@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
 {
@@ -19,6 +20,7 @@ namespace SDAM_Assignment
         public AddProductForm(int sellerId)
         {
             InitializeComponent();
+            FormStyler.ApplyTheme(this);
             this.seller = Seller.GetSellerById(sellerId);
 
             btnUploadImage.Click += btnUploadImage_Click;

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
 {
@@ -16,6 +17,7 @@ namespace SDAM_Assignment
         public ViewOrdersForm(int sellerId)
         {
             InitializeComponent();
+            FormStyler.ApplyTheme(this);
             this.sellerId = sellerId;
         }
     }

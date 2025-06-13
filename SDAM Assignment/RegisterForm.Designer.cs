@@ -35,7 +35,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.txtPhone = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.cmbRole = new System.Windows.Forms.ComboBox();
+            this.cmbRegisterRole = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -105,18 +105,14 @@
             this.label4.TabIndex = 6;
             this.label4.Text = "Role :";
             // 
-            // cmbRole
+            // cmbRegisterRole
             // 
-            this.cmbRole.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmbRole.FormattingEnabled = true;
-            this.cmbRole.Items.AddRange(new object[] {
-            "Admin",
-            "Seller",
-            "Buyer"});
-            this.cmbRole.Location = new System.Drawing.Point(304, 267);
-            this.cmbRole.Name = "cmbRole";
-            this.cmbRole.Size = new System.Drawing.Size(161, 30);
-            this.cmbRole.TabIndex = 7;
+            this.cmbRegisterRole.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbRegisterRole.FormattingEnabled = true;
+            this.cmbRegisterRole.Location = new System.Drawing.Point(304, 267);
+            this.cmbRegisterRole.Name = "cmbRegisterRole";
+            this.cmbRegisterRole.Size = new System.Drawing.Size(161, 30);
+            this.cmbRegisterRole.TabIndex = 7;
             // 
             // label5
             // 
@@ -186,7 +182,7 @@
             this.Controls.Add(this.label6);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.cmbRole);
+            this.Controls.Add(this.cmbRegisterRole);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtPhone);
             this.Controls.Add(this.label3);
@@ -210,7 +206,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtPhone;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox cmbRole;
+        private System.Windows.Forms.ComboBox cmbRegisterRole;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Label label6;
