@@ -1,0 +1,115 @@
+﻿using System;
+
+namespace SDAM_Assignment
+{
+    partial class SellerDashBoard
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.btnAddProduct = new System.Windows.Forms.Button();
+            this.btnViewProducts = new System.Windows.Forms.Button();
+            this.btnViewOrders = new System.Windows.Forms.Button();
+            this.lblWelcome = new System.Windows.Forms.Label();
+            this.btnLogout = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // btnAddProduct
+            // 
+            this.btnAddProduct.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAddProduct.Location = new System.Drawing.Point(74, 121);
+            this.btnAddProduct.Name = "btnAddProduct";
+            this.btnAddProduct.Size = new System.Drawing.Size(163, 36);
+            this.btnAddProduct.TabIndex = 0;
+            this.btnAddProduct.Text = "Add Product";
+            this.btnAddProduct.UseVisualStyleBackColor = true;
+            this.btnAddProduct.Click += new System.EventHandler(this.btnAddProduct_Click);
+            // 
+            // btnViewProducts
+            // 
+            this.btnViewProducts.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnViewProducts.Location = new System.Drawing.Point(301, 121);
+            this.btnViewProducts.Name = "btnViewProducts";
+            this.btnViewProducts.Size = new System.Drawing.Size(185, 36);
+            this.btnViewProducts.TabIndex = 1;
+            this.btnViewProducts.Text = "View My Product";
+            this.btnViewProducts.UseVisualStyleBackColor = true;
+            this.btnViewProducts.Click += new System.EventHandler(this.btnViewProducts_Click);
+            // 
+            // btnViewOrders
+            // 
+            this.btnViewOrders.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnViewOrders.Location = new System.Drawing.Point(571, 121);
+            this.btnViewOrders.Name = "btnViewOrders";
+            this.btnViewOrders.Size = new System.Drawing.Size(163, 36);
+            this.btnViewOrders.TabIndex = 2;
+            this.btnViewOrders.Text = "View Orders";
+            this.btnViewOrders.UseVisualStyleBackColor = true;
+            this.btnViewOrders.Click += new System.EventHandler(this.btnViewOrders_Click);
+            // 
+            // lblWelcome
+            // 
+            this.lblWelcome.AutoSize = true;
+            this.lblWelcome.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblWelcome.Location = new System.Drawing.Point(28, 38);
+            this.lblWelcome.Name = "lblWelcome";
+            this.lblWelcome.Size = new System.Drawing.Size(0, 25);
+            this.lblWelcome.TabIndex = 3;
+            // 
+            // btnLogout
+            // 
+            this.btnLogout.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLogout.Location = new System.Drawing.Point(610, 33);
+            this.btnLogout.Name = "btnLogout";
+            this.btnLogout.Size = new System.Drawing.Size(163, 36);
+            this.btnLogout.TabIndex = 4;
+            this.btnLogout.Text = "Logout";
+            this.btnLogout.UseVisualStyleBackColor = true;
+            this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
+            // 
+            // SellerDashBoard
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(800, 241);
+            this.Controls.Add(this.btnLogout);
+            this.Controls.Add(this.lblWelcome);
+            this.Controls.Add(this.btnViewOrders);
+            this.Controls.Add(this.btnViewProducts);
+            this.Controls.Add(this.btnAddProduct);
+            this.Name = "SellerDashBoard";
+            this.Text = "SellerDashboard";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.Button btnAddProduct;
+        private System.Windows.Forms.Button btnViewProducts;
+        private System.Windows.Forms.Button btnViewOrders;
+        private System.Windows.Forms.Label lblWelcome;
+        private System.Windows.Forms.Button btnLogout;
+
+        public EventHandler SellerDashBoard_Load { get; private set; }
+    }
+}
+
