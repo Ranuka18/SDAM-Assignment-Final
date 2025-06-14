@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using SDAM_Assignment.Controllers;
 using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
@@ -28,11 +29,12 @@ namespace SDAM_Assignment
         {
             flowLayoutPanelSellers.Controls.Clear();
 
-            List<User> sellers = currentAdmin.GetAllSellers();
+            var adminController = new AdminController();
+            List<User> sellers = adminController.GetAllSellers();
 
             foreach (var seller in sellers)
             {
-                Panel card = currentAdmin.GenerateSellerCard(seller, LoadSellers);
+                Panel card = adminController.GenerateSellerCard(seller, LoadSellers);
                 flowLayoutPanelSellers.Controls.Add(card);
             }
         }

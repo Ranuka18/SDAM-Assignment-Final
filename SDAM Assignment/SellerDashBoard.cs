@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using SDAM_Assignment.Controllers;
 using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
@@ -22,7 +23,7 @@ namespace SDAM_Assignment
             InitializeComponent();
             FormStyler.ApplyTheme(this);
             this.sellerId = sellerId;
-            this.seller = Seller.GetSellerById(sellerId);
+            this.seller = SellerController.GetSellerById(sellerId);
 
             if (seller != null)
             {
@@ -45,8 +46,8 @@ namespace SDAM_Assignment
 
         private void btnViewOrders_Click(object sender, EventArgs e)
         {
-            SellerOrdersForm ordersForm = new SellerOrdersForm(this.seller);
-            ordersForm.Show();
+            SellerAllOrdersForm allOrdersForm = new SellerAllOrdersForm(this.seller);
+            allOrdersForm.Show();
         }
 
         private void btnLogout_Click(object sender, EventArgs e)

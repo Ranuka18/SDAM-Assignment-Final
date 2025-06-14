@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SDAM_Assignment.Controllers;
 using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
@@ -15,14 +16,13 @@ namespace SDAM_Assignment
     public partial class CheckoutForm : Form
     {
         private Buyer buyer;
-
         public CheckoutForm(Buyer buyer)
         {
             InitializeComponent();
             FormStyler.ApplyTheme(this);
             this.buyer = buyer;
 
-            decimal total = CartItem.CalculateTotal(buyer.Id);
+            decimal total = CartItemsController.CalculateTotal(buyer.Id);
             lblTotal.Text = $"Total Amount: Rs. {total:F2}";
 
             ToggleCardFields(false); // Hide card fields initially
@@ -63,7 +63,7 @@ namespace SDAM_Assignment
                 }
             }
 
-            List<CartItem> items = CartItem.GetCartItems(buyer.Id);
+            List<CartItem> items = CartItemsController.GetCartItems(buyer.Id);
 
             if (items.Count == 0)
             {
@@ -75,7 +75,7 @@ namespace SDAM_Assignment
 
             foreach (var item in items)
             {
-                bool placed = Order.PlaceOrder(buyer.Id, item.ProductId, address, "Pending");
+                bool placed = OrderController.PlaceOrder(buyer.Id, item.ProductId, address, "Pending");
                 if (!placed)
                 {
                     success = false;
@@ -85,7 +85,7 @@ namespace SDAM_Assignment
 
             if (success)
             {
-                CartItem.ClearCart(buyer.Id);
+                CartItemsController.ClearCart(buyer.Id);
                 MessageBox.Show("Order placed successfully!");
                 this.Close();
             }

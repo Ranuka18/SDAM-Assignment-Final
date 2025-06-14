@@ -15,6 +15,8 @@ namespace SDAM_Assignment
     {
         private int buyerId;
         private int productId;
+        public int Rating { get; private set; }
+        public string Comment { get; private set; }
 
         public AddReviewForm(int buyerId, int productId)
         {
@@ -34,6 +36,9 @@ namespace SDAM_Assignment
         {
             int rating = (int)numRating.Value;
             string comment = txtComment.Text.Trim();
+            this.Rating = Convert.ToInt32(numRating.Value);
+            this.Comment = txtComment.Text; 
+            this.DialogResult = DialogResult.OK;
 
             if (string.IsNullOrEmpty(comment))
             {

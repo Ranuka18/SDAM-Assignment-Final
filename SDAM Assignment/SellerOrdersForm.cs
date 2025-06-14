@@ -7,30 +7,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SDAM_Assignment.Controllers;
 using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
 {
     public partial class SellerOrdersForm : Form
     {
-        private Seller seller;
+        private readonly Seller seller;
+        private readonly int productId;
+        public bool OrdersResolved { get; private set; }
 
-        public SellerOrdersForm(Seller seller)
+        public SellerOrdersForm(Seller seller, int productId)
         {
             InitializeComponent();
             this.seller = seller;
-            LoadOrders();
+            this.productId = productId;
+            LoadOrdersForProduct();
             FormStyler.ApplyTheme(this);
         }
 
-        private void LoadOrders()
+        private void LoadOrdersForProduct()
         {
             flowLayoutPanelOrders.Controls.Clear();
-            var orders = Order.GetOrdersForSeller(seller.Id);
+            var orders = OrderController.GetOrdersForProduct(productId);
+
+            if (!orders.Any())
+            {
+                var emptyLabel = new Label
+                {
+                    Text = "No orders found for this product.",
+                    AutoSize = true,
+                    Font = new Font("Arial", 10, FontStyle.Italic)
+                };
+                flowLayoutPanelOrders.Controls.Add(emptyLabel);
+                return;
+            }
 
             foreach (var order in orders)
             {
-                Product product = Product.GetById(order.ProductId);
+                Product product = ProductController.GetById(order.ProductId);
 
                 Panel panel = new Panel
                 {
@@ -44,57 +60,81 @@ namespace SDAM_Assignment
 
                 Label lbl = new Label
                 {
-                    Text = $"{product.Name} | Buyer ID: {order.BuyerId} | Status: {order.Status}",
+                    Text = $"{product.Name}\nBuyer ID: {order.BuyerId}\nStatus: {order.Status}",
                     AutoSize = true,
                     Left = 10,
                     Top = 10
                 };
 
-                Button btnShip = new Button
+                Button btnComplete = new Button
                 {
-                    Text = "Ship",
+                    Text = "Complete",
                     Left = 10,
-                    Top = 40,
+                    Top = 60,
                     Width = 80,
-                    Enabled = order.Status == "Pending",
-                    BackColor = Color.LightBlue, 
+                    Enabled = order.Status == "Pending" || order.Status == "Shipped",
+                    BackColor = Color.LightGreen,
                     ForeColor = Color.Black,
                 };
 
-                btnShip.Click += (s, e) =>
+                btnComplete.Click += (s, e) =>
                 {
-                    Order.UpdateStatus(order.OrderId, "Shipped");
-                    LoadOrders();
+                    OrderController.UpdateStatus(order.OrderId, "Completed");
+                    LoadOrdersForProduct();
+                    OrdersResolved = true;
                 };
 
                 Button btnCancel = new Button
                 {
                     Text = "Cancel",
                     Left = 100,
-                    Top = 40,
+                    Top = 60,
                     Width = 80,
                     Enabled = order.Status == "Pending",
-                    BackColor = Color.IndianRed, 
+                    BackColor = Color.IndianRed,
                     ForeColor = Color.Black,
                     Tag = "NoTheme"
                 };
 
                 btnCancel.Click += (s, e) =>
                 {
-                    CancelReasonForm reasonForm = new CancelReasonForm(order.OrderId, this);
+                    CancelReasonForm reasonForm = new CancelReasonForm(order.OrderId);
                     if (reasonForm.ShowDialog() == DialogResult.OK)
                     {
-                        string reason = reasonForm.Reason;
-                        Order.UpdateStatus(order.OrderId, "Cancelled", reason);
-                        LoadOrders();
+                        OrderController.UpdateStatus(order.OrderId, "Cancelled", reasonForm.Reason);
+                        LoadOrdersForProduct();
+                        OrdersResolved = true;
                     }
                 };
 
                 panel.Controls.Add(lbl);
-                panel.Controls.Add(btnShip);
+                panel.Controls.Add(btnComplete);
                 panel.Controls.Add(btnCancel);
                 flowLayoutPanelOrders.Controls.Add(panel);
             }
+        }
+
+        private void btnResolveAll_Click(object sender, EventArgs e)
+        {
+            var confirm = MessageBox.Show("Mark all pending orders as completed?", "Confirm",
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.Yes)
+            {
+                if (OrderController.ResolveAllOrdersForProduct(productId))
+                {
+                    OrdersResolved = true;
+                    MessageBox.Show("All orders marked as completed.", "Success",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadOrdersForProduct();
+                }
+            }
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = OrdersResolved ? DialogResult.OK : DialogResult.Cancel;
+            this.Close();
         }
     }
 }

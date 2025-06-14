@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SDAM_Assignment.Controllers;
 using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
@@ -27,7 +28,7 @@ namespace SDAM_Assignment
         {
             flowLayoutPanelProducts.Controls.Clear();
 
-            List<Product> products = Product.LoadProductsBySeller(sellerId);
+            List<Product> products = ProductController.LoadProductsBySeller(sellerId);
 
             foreach (var product in products)
             {

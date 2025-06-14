@@ -16,12 +16,11 @@ namespace SDAM_Assignment
         private int orderId;
         public string Reason { get; private set; }
 
-        public CancelReasonForm(int orderId, SellerOrdersForm parent = null)
+        public CancelReasonForm(int orderId)
         {
             InitializeComponent();
             FormStyler.ApplyTheme(this);
-
-            this.btnConfirm.Click += new System.EventHandler(this.btnConfirm_Click);
+            this.btnConfirm.Click += btnConfirm_Click;
             this.orderId = orderId;
         }
 

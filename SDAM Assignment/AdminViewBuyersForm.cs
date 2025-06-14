@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SDAM_Assignment.Controllers;
 using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
@@ -23,7 +24,7 @@ namespace SDAM_Assignment
         private void LoadBuyers()
         {
             flowLayoutPanelBuyers.Controls.Clear();
-            List<Buyer> buyers = Buyer.GetAllBuyers();
+            List<Buyer> buyers = BuyerController.GetAllBuyers();
 
             foreach (var buyer in buyers)
             {
@@ -58,7 +59,7 @@ namespace SDAM_Assignment
                 {
                     if (MessageBox.Show("Are you sure you want to delete this buyer?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        Buyer.DeleteBuyer(buyer.Id);
+                        bool success = BuyerController.DeleteBuyer(buyer.Id);
                         LoadBuyers();
                     }
                 };

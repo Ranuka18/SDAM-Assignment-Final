@@ -11,6 +11,7 @@ using MySql.Data.MySqlClient;
 using System.IO;
 using System.Data.Common;
 using SDAM_Assignment.Helpers;
+using SDAM_Assignment.Controllers;
 
 
 namespace SDAM_Assignment
@@ -18,6 +19,7 @@ namespace SDAM_Assignment
     public partial class ViewProductsForm : Form
     {
         private Seller seller;
+        private Seller currentSeller;
 
         public ViewProductsForm(Seller seller)
         {
@@ -32,7 +34,7 @@ namespace SDAM_Assignment
             try
             {
                 flowLayoutPanelProducts.Controls.Clear();
-                List<Product> products = seller.GetMyProducts();
+                List<Product> products = SellerController.GetMyProducts(seller.Id);
 
                 if (products.Count == 0)
                 {
@@ -153,17 +155,60 @@ namespace SDAM_Assignment
             {
                 if (ConfirmDeletion(product.Name))
                 {
-                    if (seller.DeleteProduct(product.ProductId))
+                    int orderCount = OrderController.GetOrderCountForProduct(product.ProductId);
+
+                    if (orderCount == 0)
                     {
-                        MessageBox.Show("Product deleted.");
-                        LoadProductsBySeller();
+                        if (SellerController.DeleteProduct(product.ProductId))
+                        {
+                            MessageBox.Show("Product deleted successfully.", "Success",
+                                          MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            LoadProductsBySeller();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to delete product.", "Error",
+                                          MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("Delete failed.");
+                        var result = MessageBox.Show(
+                            $"This product has {orderCount} active order(s).\n\n" +
+                            "Would you like to manage these orders before deletion?",
+                            "Active Orders Exist",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning);
+
+                        if (result == DialogResult.Yes)
+                        {
+                            using (var orderForm = new SellerOrdersForm(currentSeller, product.ProductId))
+                            {
+                                if (orderForm.ShowDialog() == DialogResult.OK)
+                                {
+                                    // Try deleting again after order resolution
+                                    if (SellerController.DeleteProduct(product.ProductId))
+                                    {
+                                        MessageBox.Show("Product deleted successfully after order resolution.",
+                                                      "Success",
+                                                      MessageBoxButtons.OK,
+                                                      MessageBoxIcon.Information);
+                                        LoadProductsBySeller();
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Failed to delete product after order resolution.",
+                                                      "Error",
+                                                      MessageBoxButtons.OK,
+                                                      MessageBoxIcon.Error);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             };
+
 
             Button btnViewReviews = new Button
             {
@@ -195,9 +240,9 @@ namespace SDAM_Assignment
         private bool ConfirmDeletion(string productName)
         {
             return MessageBox.Show($"Are you sure you want to delete '{productName}'?",
-                                   "Confirm Deletion",
-                                   MessageBoxButtons.YesNo,
-                                   MessageBoxIcon.Question) == DialogResult.Yes;
+                                 "Confirm Deletion",
+                                 MessageBoxButtons.YesNo,
+                                 MessageBoxIcon.Question) == DialogResult.Yes;
         }
     }
 }

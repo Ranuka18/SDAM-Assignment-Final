@@ -116,6 +116,13 @@
     <Compile Include="CheckoutForm.Designer.cs">
       <DependentUpon>CheckoutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\BuyerController.cs" />
+    <Compile Include="Controllers\CartItemsController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\SellerController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="EditProductForm.cs">
       <SubType>Form</SubType>
@@ -140,6 +147,12 @@
     </Compile>
     <Compile Include="Review.cs" />
     <Compile Include="Seller.cs" />
+    <Compile Include="SellerAllOrdersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SellerAllOrdersForm.Designer.cs">
+      <DependentUpon>SellerAllOrdersForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SellerDashBoard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -238,6 +251,9 @@
     </Compile>
     <EmbeddedResource Include="RegisterForm.resx">
       <DependentUpon>RegisterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SellerAllOrdersForm.resx">
+      <DependentUpon>SellerAllOrdersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SellerDashBoard.resx">
       <DependentUpon>SellerDashBoard.cs</DependentUpon>

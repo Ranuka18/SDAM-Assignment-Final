@@ -49,9 +49,24 @@
             // numRating
             // 
             this.numRating.Location = new System.Drawing.Point(175, 102);
+            this.numRating.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numRating.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.numRating.Name = "numRating";
             this.numRating.Size = new System.Drawing.Size(81, 22);
             this.numRating.TabIndex = 1;
+            this.numRating.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // lblComment
             // 

@@ -17,13 +17,28 @@ namespace SDAM_Assignment
 
         private static string connectionString = "server=localhost;user=root;password=;database=marketplace;";
 
+
         public static bool AddReview(int buyerId, int productId, int rating, string comment)
         {
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "INSERT INTO reviews (buyer_id, product_id, rating, comment) VALUES (@buyerId, @productId, @rating, @comment)";
-                MySqlCommand cmd = new MySqlCommand(query, conn);
+
+                // Check if review exists
+                string checkQuery = "SELECT COUNT(*) FROM reviews WHERE buyer_id = @buyerId AND product_id = @productId";
+                MySqlCommand checkCmd = new MySqlCommand(checkQuery, conn);
+                checkCmd.Parameters.AddWithValue("@buyerId", buyerId);
+                checkCmd.Parameters.AddWithValue("@productId", productId);
+                bool alreadyReviewed = Convert.ToInt32(checkCmd.ExecuteScalar()) > 0;
+
+                if (alreadyReviewed)
+                {
+                    return false;
+                }
+
+                // Insert new review
+                string insertQuery = "INSERT INTO reviews (buyer_id, product_id, rating, comment) VALUES (@buyerId, @productId, @rating, @comment)";
+                MySqlCommand cmd = new MySqlCommand(insertQuery, conn);
                 cmd.Parameters.AddWithValue("@buyerId", buyerId);
                 cmd.Parameters.AddWithValue("@productId", productId);
                 cmd.Parameters.AddWithValue("@rating", rating);
@@ -31,6 +46,8 @@ namespace SDAM_Assignment
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
+
+
 
         public static List<Review> GetReviews(int productId)
         {

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using SDAM_Assignment.Helpers;
+using SDAM_Assignment.Controllers;
 
 
 namespace SDAM_Assignment
@@ -55,7 +56,7 @@ namespace SDAM_Assignment
             if (!string.IsNullOrEmpty(newImagePath))
                 product.ImagePath = newImagePath;
 
-            bool updated = Product.Update(product);
+            bool updated = ProductController.Update(product);
 
             if (updated)
             {
