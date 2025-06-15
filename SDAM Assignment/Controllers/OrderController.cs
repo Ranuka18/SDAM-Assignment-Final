@@ -58,17 +58,20 @@ namespace SDAM_Assignment.Controllers
 
         public static int GetOrderCountForProduct(int productId)
         {
+            int count = 0;
             using (var conn = new MySqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT COUNT(*) FROM orders WHERE product_id = @productId";
+                string query = "SELECT COUNT(*) FROM orders WHERE product_id = @productId AND status = 'Pending'";
                 using (var cmd = new MySqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@productId", productId);
-                    return Convert.ToInt32(cmd.ExecuteScalar());
+                    count = Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
+            return count;
         }
+       
 
         public static DataTable GetOrdersByProduct(int productId)
         {

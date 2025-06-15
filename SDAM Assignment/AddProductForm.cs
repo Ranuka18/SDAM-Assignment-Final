@@ -10,12 +10,12 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using SDAM_Assignment.Controllers;
 using SDAM_Assignment.Helpers;
+using System.IO;
 
 namespace SDAM_Assignment
 {
     public partial class AddProductForm : Form
     {
-        private string imagePath = "";
         private int sellerId;
         private Seller seller;
 
@@ -26,7 +26,6 @@ namespace SDAM_Assignment
             this.sellerId = sellerId;
             this.seller = SellerController.GetSellerById(sellerId);
 
-            // Remove SellerController instance since we're using static methods
             btnUploadImage.Click += btnUploadImage_Click;
             btnSave.Click += btnSave_Click;
         }
@@ -35,18 +34,24 @@ namespace SDAM_Assignment
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif";
+                ofd.Filter = "Image Files|*.jpg;*.jpeg;*.png";
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    imagePath = ofd.FileName;
                     try
                     {
-                        pictureBox1.Image = Image.FromFile(imagePath);
+                        // Read image directly into byte array
+                        byte[] imageData = File.ReadAllBytes(ofd.FileName);
+
+                        // Store in PictureBox.Tag for later use
+                        pictureBox1.Tag = imageData;
+
+                        // Preview the image
+                        pictureBox1.Image = Image.FromStream(new MemoryStream(imageData));
+                        pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Error loading image: {ex.Message}");
-                        imagePath = "";
+                        MessageBox.Show("Error loading image: " + ex.Message);
                     }
                 }
             }
@@ -54,14 +59,21 @@ namespace SDAM_Assignment
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // Input validation
             if (!ValidateInputs(out string name, out string desc, out decimal price))
             {
                 return;
             }
 
-            // Use static SellerController
-            bool result = SellerController.AddProduct(sellerId, name, desc, price, imagePath);
+            // Get the image data from PictureBox.Tag
+            byte[] imageData = pictureBox1.Tag as byte[];
+
+            bool result = SellerController.AddProduct(
+                sellerId: seller.Id,
+                name: name,
+                description: desc,
+                price: price,
+                image_data: imageData
+            );
 
             if (result)
             {
@@ -108,7 +120,7 @@ namespace SDAM_Assignment
             txtDescription.Clear();
             txtPrice.Clear();
             pictureBox1.Image = null;
-            imagePath = "";
+            pictureBox1.Tag = null;
         }
     }
 }

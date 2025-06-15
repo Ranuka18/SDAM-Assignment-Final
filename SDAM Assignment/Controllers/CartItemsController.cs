@@ -122,6 +122,95 @@ namespace SDAM_Assignment.Controllers
             return details;
         }
 
+        public static bool AdjustQuantity(int buyerId, int productId, int change)
+        {
+            try
+            {
+                using (var conn = new MySqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    // Get current quantity
+                    int currentQty = GetCurrentQuantity(conn, buyerId, productId);
+                    int newQty = Math.Max(1, currentQty + change);
+
+                    // Update quantity in cart table
+                    string query = @"UPDATE cart 
+                               SET quantity = @quantity 
+                               WHERE buyer_id = @buyerId 
+                               AND product_id = @productId";
+
+                    using (var cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@quantity", newQty);
+                        cmd.Parameters.AddWithValue("@buyerId", buyerId);
+                        cmd.Parameters.AddWithValue("@productId", productId);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        // If item doesn't exist, add it to cart
+                        if (rowsAffected == 0)
+                        {
+                            return AddToCart(conn, buyerId, productId, newQty);
+                        }
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adjusting quantity: {ex.Message}",
+                              "Database Error",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+
+        private static int GetCurrentQuantity(MySqlConnection conn, int buyerId, int productId)
+        {
+            string query = @"SELECT quantity FROM cart 
+                        WHERE buyer_id = @buyerId 
+                        AND product_id = @productId";
+
+            using (var cmd = new MySqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@buyerId", buyerId);
+                cmd.Parameters.AddWithValue("@productId", productId);
+
+                object result = cmd.ExecuteScalar();
+                return result != null ? Convert.ToInt32(result) : 0;
+            }
+        }
+
+        private static bool AddToCart(MySqlConnection conn, int buyerId, int productId, int quantity)
+        {
+            string query = @"INSERT INTO cart (buyer_id, product_id, quantity) 
+                        VALUES (@buyerId, @productId, @quantity)";
+
+            using (var cmd = new MySqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@buyerId", buyerId);
+                cmd.Parameters.AddWithValue("@productId", productId);
+                cmd.Parameters.AddWithValue("@quantity", quantity);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                    return true;
+                }
+                catch (MySqlException ex)
+                {
+                    if (ex.Number == 1062) // Duplicate entry error
+                    {
+                        // Retry update if race condition occurred
+                        return AdjustQuantity(buyerId, productId, quantity > 1 ? 1 : -1);
+                    }
+                    throw;
+                }
+            }
+        }
 
         public static decimal CalculateTotal(int buyerId)
         {

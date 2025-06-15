@@ -42,7 +42,7 @@ namespace SDAM_Assignment.Controllers
                 BorderStyle = BorderStyle.FixedSingle,
                 Margin = new Padding(10),
                 BackColor = Color.White,
-                Tag = buyerId // Store buyer ID for cart operations
+                Tag = buyerId
             };
 
             // Product Image
@@ -54,7 +54,7 @@ namespace SDAM_Assignment.Controllers
                 Left = 10,
                 SizeMode = PictureBoxSizeMode.StretchImage
             };
-            LoadProductImage(picture, product.ImagePath);
+            LoadProductImage(picture, product.Image_data);
 
             // Product Name
             Label lblName = new Label
@@ -97,7 +97,7 @@ namespace SDAM_Assignment.Controllers
                 Height = 30,
                 Top = lblPrice.Bottom + 5,
                 Left = 10,
-                Tag = product.ProductId // Store product ID
+                Tag = product.ProductId
             };
             btnAddToCart.Click += (sender, e) => AddToCartHandler(sender, buyerId);
 
@@ -117,13 +117,16 @@ namespace SDAM_Assignment.Controllers
             return card;
         }
 
-        private static void LoadProductImage(PictureBox pictureBox, string imagePath)
+        private static void LoadProductImage(PictureBox pictureBox, byte[] imageData)
         {
             try
             {
-                if (File.Exists(imagePath))
+                if (imageData != null && imageData.Length > 0)
                 {
-                    pictureBox.Image = Image.FromFile(imagePath);
+                    using (MemoryStream ms = new MemoryStream(imageData))
+                    {
+                        pictureBox.Image = Image.FromStream(ms);
+                    }
                 }
             }
             catch

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ using SDAM_Assignment.Helpers;
 
 namespace SDAM_Assignment
 {
-    public partial class SellerDetailsForm: Form
+    public partial class SellerDetailsForm : Form
     {
         private int sellerId;
 
@@ -58,15 +59,19 @@ namespace SDAM_Assignment
                 SizeMode = PictureBoxSizeMode.StretchImage
             };
 
-            if (System.IO.File.Exists(product.ImagePath))
+            // Modified image loading to use byte array
+            if (product.Image_data != null && product.Image_data.Length > 0)
             {
-                picture.Image = Image.FromFile(product.ImagePath);
+                using (MemoryStream ms = new MemoryStream(product.Image_data))
+                {
+                    picture.Image = Image.FromStream(ms);
+                }
             }
 
             Label lblName = new Label
             {
                 Text = product.Name,
-                Top = picture.Bottom + 5,
+                Top = 170, // Fixed position below picture box
                 Left = 10,
                 Width = 180,
                 Font = new Font("Segoe UI", 10, FontStyle.Bold)
@@ -75,7 +80,7 @@ namespace SDAM_Assignment
             Label lblDesc = new Label
             {
                 Text = product.Description,
-                Top = lblName.Bottom + 5,
+                Top = 195,
                 Left = 10,
                 Width = 180,
                 Height = 40,
@@ -85,7 +90,7 @@ namespace SDAM_Assignment
             Label lblPrice = new Label
             {
                 Text = $"${product.Price:F2}",
-                Top = lblDesc.Bottom + 5,
+                Top = 240,
                 Left = 10,
                 Width = 180,
                 ForeColor = Color.Green,
@@ -97,25 +102,29 @@ namespace SDAM_Assignment
                 Text = "View Reviews",
                 Width = 100,
                 Height = 30,
-                Top = lblPrice.Bottom + 5,
+                Top = 260,
                 Left = 10,
                 BackColor = Color.LightGray
             };
 
             btnViewReviews.Click += (s, e) =>
             {
-                AdminViewReviewsForm reviewForm = new AdminViewReviewsForm(product.ProductId); 
+                AdminViewReviewsForm reviewForm = new AdminViewReviewsForm(product.ProductId);
                 reviewForm.ShowDialog();
             };
-
-            card.Controls.Add(btnViewReviews);
 
             card.Controls.Add(picture);
             card.Controls.Add(lblName);
             card.Controls.Add(lblDesc);
             card.Controls.Add(lblPrice);
+            card.Controls.Add(btnViewReviews);
 
             return card;
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            LoadSellerProducts();
         }
     }
 }

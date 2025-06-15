@@ -35,7 +35,7 @@ namespace SDAM_Assignment.Controllers
                             Name = reader["name"].ToString(),
                             Description = reader["description"].ToString(),
                             Price = Convert.ToDecimal(reader["price"]),
-                            ImagePath = reader["image_path"].ToString()
+                            Image_data = reader["image_data"] as byte[] // Changed
                         });
                     }
                 }
@@ -64,7 +64,7 @@ namespace SDAM_Assignment.Controllers
                             Name = reader["name"].ToString(),
                             Description = reader["description"].ToString(),
                             Price = Convert.ToDecimal(reader["price"]),
-                            ImagePath = reader["image_path"].ToString()
+                            Image_data = reader["image_data"] as byte[] // Changed
                         });
                     }
                 }
@@ -92,7 +92,7 @@ namespace SDAM_Assignment.Controllers
                                 Name = reader["name"].ToString(),
                                 Description = reader["description"].ToString(),
                                 Price = Convert.ToDecimal(reader["price"]),
-                                ImagePath = reader["image_path"].ToString()
+                                Image_data = reader["image_data"] as byte[] // Changed
                             };
                         }
                     }
@@ -122,7 +122,7 @@ namespace SDAM_Assignment.Controllers
                                 Name = reader["name"].ToString(),
                                 Description = reader["description"].ToString(),
                                 Price = Convert.ToDecimal(reader["price"]),
-                                ImagePath = reader["image_path"].ToString()
+                                Image_data = reader["image_data"] as byte[] // Changed
                             });
                         }
                     }
@@ -133,7 +133,7 @@ namespace SDAM_Assignment.Controllers
 
         public static bool Save(Product product)
         {
-            string query = "INSERT INTO products (seller_id, name, description, price, image_path) " +
+            string query = "INSERT INTO products (seller_id, name, description, price, image_data) " +
                          "VALUES (@sid, @name, @desc, @price, @img)";
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
@@ -144,7 +144,7 @@ namespace SDAM_Assignment.Controllers
                     cmd.Parameters.AddWithValue("@name", product.Name);
                     cmd.Parameters.AddWithValue("@desc", product.Description);
                     cmd.Parameters.AddWithValue("@price", product.Price);
-                    cmd.Parameters.AddWithValue("@img", product.ImagePath);
+                    cmd.Parameters.AddWithValue("@img", product.Image_data ?? (object)DBNull.Value); // Changed
                     return cmd.ExecuteNonQuery() > 0;
                 }
             }
@@ -168,14 +168,15 @@ namespace SDAM_Assignment.Controllers
             {
                 conn.Open();
                 string query = @"UPDATE products 
-                     SET name = @name, price = @price, description = @description, image_path = @imagePath 
-                     WHERE product_id = @id";
+                 SET name = @name, price = @price, 
+                 description = @description, image_data = @imageData 
+                 WHERE product_id = @id";
 
                 MySqlCommand cmd = new MySqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@name", product.Name);
                 cmd.Parameters.AddWithValue("@price", product.Price);
                 cmd.Parameters.AddWithValue("@description", product.Description);
-                cmd.Parameters.AddWithValue("@imagePath", product.ImagePath);
+                cmd.Parameters.AddWithValue("@imageData", product.Image_data ?? (object)DBNull.Value); // Changed
                 cmd.Parameters.AddWithValue("@id", product.ProductId);
 
                 return cmd.ExecuteNonQuery() > 0;
@@ -183,4 +184,3 @@ namespace SDAM_Assignment.Controllers
         }
     }
 }
-

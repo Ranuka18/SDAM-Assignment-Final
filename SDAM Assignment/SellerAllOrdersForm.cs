@@ -21,15 +21,14 @@ namespace SDAM_Assignment
         {
             InitializeComponent();
             this.seller = seller;
-            LoadOrders();  // Changed from LoadAllOrders to LoadOrders
+            LoadOrders();  
             FormStyler.ApplyTheme(this);
         }
 
-        private void LoadOrders()  // This is the correct method name
+        private void LoadOrders() 
         {
             flowLayoutPanelOrders.Controls.Clear();
 
-            // No need to instantiate static controllers
             var orders = OrderController.GetOrdersForSeller(seller.Id);
 
             foreach (var order in orders)
@@ -67,7 +66,6 @@ namespace SDAM_Assignment
 
                 btnShip.Click += (s, e) =>
                 {
-                    // Call static method properly
                     OrderController.UpdateStatus(order.OrderId, "Shipped");
                     LoadOrders();
                 };
@@ -104,7 +102,7 @@ namespace SDAM_Assignment
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            LoadOrders();  // Changed from LoadAllOrders to LoadOrders
+            LoadOrders();  
         }
 
         private void btnClose_Click(object sender, EventArgs e)

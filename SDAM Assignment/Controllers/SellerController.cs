@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
 namespace SDAM_Assignment.Controllers
@@ -11,23 +12,32 @@ namespace SDAM_Assignment.Controllers
     {
         private static readonly string connectionString = "server=localhost;user=root;password=;database=marketplace;";
 
-        public static bool AddProduct(int sellerId, string name, string description, decimal price, string imagePath)
+        public static bool AddProduct(int sellerId, string name, string description, decimal price, byte[] image_data)
         {
-            Product product = new Product
+            using (var conn = new MySqlConnection(connectionString))
             {
-                SellerId = sellerId,
-                Name = name,
-                Description = description,
-                Price = price,
-                ImagePath = imagePath
-            };
-            return ProductController.Save(product);
+                conn.Open();
+                string query = @"INSERT INTO products 
+                  (seller_id, name, description, price, image_data) 
+                  VALUES (@sellerId, @name, @description, @price, @image_data)";
+
+                using (var cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@sellerId", sellerId);
+                    cmd.Parameters.AddWithValue("@name", name);
+                    cmd.Parameters.AddWithValue("@description", description);
+                    cmd.Parameters.AddWithValue("@price", price);
+                    cmd.Parameters.AddWithValue("@image_data", image_data ?? (object)DBNull.Value);
+
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
         }
 
         public static List<Product> GetMyProducts(int sellerId)
         {
             List<Product> products = new List<Product>();
-            string query = "SELECT product_id, name, description, price, image_path FROM products WHERE seller_id = @sid";
+            string query = "SELECT product_id, name, description, price, image_data FROM products WHERE seller_id = @sid";
 
             using (MySqlConnection conn = new MySqlConnection(connectionString))
             {
@@ -45,7 +55,7 @@ namespace SDAM_Assignment.Controllers
                             Name = reader.GetString("name"),
                             Description = reader.GetString("description"),
                             Price = reader.GetDecimal("price"),
-                            ImagePath = reader.GetString("image_path"),
+                            Image_data = reader["image_data"] as byte[],
                             SellerId = sellerId
                         });
                     }
@@ -53,7 +63,6 @@ namespace SDAM_Assignment.Controllers
             }
             return products;
         }
-
 
         public static (bool CanDelete, int OrderCount) CheckProductDeletionStatus(int productId)
         {
@@ -65,41 +74,43 @@ namespace SDAM_Assignment.Controllers
         {
             using (var conn = new MySqlConnection(connectionString))
             {
-                conn.Open();
-                using (var transaction = conn.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        // 1. First delete any related product images
-                        string deleteImagesQuery = "DELETE FROM product_images WHERE product_id = @productId";
-                        using (var cmdImages = new MySqlCommand(deleteImagesQuery, conn, transaction))
-                        {
-                            cmdImages.Parameters.AddWithValue("@productId", productId);
-                            cmdImages.ExecuteNonQuery();
-                        }
+                    conn.Open();
 
-                        // 2. Then delete the product itself
-                        string deleteProductQuery = "DELETE FROM products WHERE product_id = @productId";
-                        using (var cmdProduct = new MySqlCommand(deleteProductQuery, conn, transaction))
-                        {
-                            cmdProduct.Parameters.AddWithValue("@productId", productId);
-                            int rowsAffected = cmdProduct.ExecuteNonQuery();
-
-                            transaction.Commit();
-                            return rowsAffected > 0;
-                        }
-                    }
-                    catch (Exception ex)
+                    // First, delete related reviews
+                    string deleteReviewsQuery = "DELETE FROM reviews WHERE product_id = @productId";
+                    using (var cmd = new MySqlCommand(deleteReviewsQuery, conn))
                     {
-                        transaction.Rollback();
-                        // Log the error if needed
-                        Console.WriteLine($"Error deleting product: {ex.Message}");
-                        return false;
+                        cmd.Parameters.AddWithValue("@productId", productId);
+                        cmd.ExecuteNonQuery();
                     }
+
+                    // Then delete related orders
+                    string deleteOrdersQuery = "DELETE FROM orders WHERE product_id = @productId";
+                    using (var cmd = new MySqlCommand(deleteOrdersQuery, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@productId", productId);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // Finally delete the product
+                    string deleteProductQuery = "DELETE FROM products WHERE product_id = @productId";
+                    using (var cmd = new MySqlCommand(deleteProductQuery, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@productId", productId);
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        return rowsAffected > 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log the error or handle it appropriately
+                    Console.WriteLine($"Error deleting product: {ex.Message}");
+                    return false;
                 }
             }
         }
-
 
         public static bool UpdateProduct(Product product)
         {

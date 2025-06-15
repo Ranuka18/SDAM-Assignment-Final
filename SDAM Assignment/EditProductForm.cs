@@ -17,8 +17,7 @@ namespace SDAM_Assignment
     public partial class EditProductForm : Form
     {
         private Product product;
-        private string newImagePath = null;
-
+        private byte[] newImageData = null;
 
         public EditProductForm(Product product)
         {
@@ -30,17 +29,19 @@ namespace SDAM_Assignment
             txtPrice.Text = product.Price.ToString("F2");
             txtDescription.Text = product.Description;
 
-            if (!string.IsNullOrEmpty(product.ImagePath) && File.Exists(product.ImagePath))
+            // Load existing image from byte array if available
+            if (product.Image_data != null && product.Image_data.Length > 0)
             {
-                pictureBoxImage.Image = Image.FromFile(product.ImagePath);
+                using (var ms = new MemoryStream(product.Image_data))
+                {
+                    pictureBoxImage.Image = Image.FromStream(ms);
+                }
             }
             else
             {
                 pictureBoxImage.Image = null;
             }
         }
-
-      
 
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -53,8 +54,9 @@ namespace SDAM_Assignment
             if (decimal.TryParse(txtPrice.Text.Trim(), out decimal price))
                 product.Price = price;
 
-            if (!string.IsNullOrEmpty(newImagePath))
-                product.ImagePath = newImagePath;
+            // Update image data if new image was selected
+            if (newImageData != null)
+                product.Image_data = newImageData;
 
             bool updated = ProductController.Update(product);
 
@@ -79,8 +81,21 @@ namespace SDAM_Assignment
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    newImagePath = dialog.FileName;
-                    pictureBoxImage.Image = Image.FromFile(newImagePath);
+                    try
+                    {
+                        // Read the selected image into byte array
+                        newImageData = File.ReadAllBytes(dialog.FileName);
+
+                        // Display the image preview
+                        using (var ms = new MemoryStream(newImageData))
+                        {
+                            pictureBoxImage.Image = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error loading image: " + ex.Message);
+                    }
                 }
             }
         }

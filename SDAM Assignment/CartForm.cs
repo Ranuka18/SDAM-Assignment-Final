@@ -29,13 +29,11 @@ namespace SDAM_Assignment
             try
             {
                 flowLayoutPanelCart.Controls.Clear();
-                flowLayoutPanelCart.AutoScroll = true; // Ensure scrolling works
-                flowLayoutPanelCart.Visible = true; // Make sure panel is visible
+                flowLayoutPanelCart.AutoScroll = true;
+                flowLayoutPanelCart.Visible = true;
 
-                // Debug output
                 Debug.WriteLine($"Loading cart for buyer ID: {buyer?.Id}");
 
-                // 1. Verify cart items exist
                 List<CartItem> items = CartItemsController.GetCartItems(buyer.Id);
                 Debug.WriteLine($"Found {items.Count} cart items");
 
@@ -46,12 +44,10 @@ namespace SDAM_Assignment
                     return;
                 }
 
-                // 2. Calculate and display total
                 decimal total = CartItemsController.CalculateTotal(buyer.Id);
                 lblTotal.Text = $"Total: Rs. {total:F2}";
                 lblTotal.Visible = true;
 
-                // 3. Display each item
                 foreach (var item in items)
                 {
                     Debug.WriteLine($"Processing item - ProductID: {item.ProductId}, Qty: {item.Quantity}");
@@ -68,45 +64,110 @@ namespace SDAM_Assignment
 
                     Panel panel = new Panel
                     {
-                        Width = flowLayoutPanelCart.Width - 30, // Dynamic width
-                        Height = 90,
+                        Width = flowLayoutPanelCart.Width - 30,
+                        Height = 120,
                         BorderStyle = BorderStyle.FixedSingle,
                         Margin = new Padding(5),
                         BackColor = SystemColors.Control,
-                        Tag = product.ProductId // Store product ID for reference
+                        Tag = product.ProductId
                     };
 
-                    Label lbl = new Label
+                    // Product Name Label
+                    Label lblName = new Label
                     {
-                        Text = $"{product.Name} - Qty: {item.Quantity} - Rs. {product.Price * item.Quantity:F2}",
+                        Text = product.Name,
                         AutoSize = false,
                         Width = panel.Width - 100,
-                        Height = 30,
+                        Height = 20,
                         Left = 10,
                         Top = 10,
+                        Font = new Font("Segoe UI", 9, FontStyle.Bold)
+                    };
+
+                    // Price Label
+                    Label lblPrice = new Label
+                    {
+                        Text = $"Rs. {product.Price:F2} each",
+                        AutoSize = false,
+                        Width = panel.Width - 100,
+                        Height = 20,
+                        Left = 10,
+                        Top = 30,
+                        Font = new Font("Segoe UI", 8)
+                    };
+
+                    // Quantity Controls
+                    Button btnDecrease = new Button
+                    {
+                        Text = "-",
+                        Width = 30,
+                        Height = 30,
+                        Left = 10,
+                        Top = 55,
+                        Tag = product.ProductId,
+                        Font = new Font("Segoe UI", 9, FontStyle.Bold)
+                    };
+                    btnDecrease.Click += (s, e) => AdjustQuantity((int)btnDecrease.Tag, -1);
+
+                    Label lblQuantity = new Label
+                    {
+                        Text = item.Quantity.ToString(),
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        Width = 40,
+                        Height = 30,
+                        Left = 45,
+                        Top = 55,
+                        BorderStyle = BorderStyle.FixedSingle,
                         Font = new Font("Segoe UI", 9)
                     };
 
+                    Button btnIncrease = new Button
+                    {
+                        Text = "+",
+                        Width = 30,
+                        Height = 30,
+                        Left = 90,
+                        Top = 55,
+                        Tag = product.ProductId,
+                        Font = new Font("Segoe UI", 9, FontStyle.Bold)
+                    };
+                    btnIncrease.Click += (s, e) => AdjustQuantity((int)btnIncrease.Tag, 1);
+
+                    // Item Total
+                    Label lblItemTotal = new Label
+                    {
+                        Text = $"Total: Rs. {product.Price * item.Quantity:F2}",
+                        AutoSize = false,
+                        Width = panel.Width - 120,
+                        Height = 20,
+                        Left = 130,
+                        Top = 60,
+                        Font = new Font("Segoe UI", 9, FontStyle.Bold)
+                    };
+
+                    // Remove Button
                     Button btnRemove = new Button
                     {
                         Text = "Remove",
                         Left = panel.Width - 90,
-                        Top = 10,
+                        Top = 30,
                         Width = 80,
-                        Height = 30,
+                        Height = 25,
                         BackColor = Color.OrangeRed,
                         ForeColor = Color.White,
-                        Tag = product.ProductId
+                        Tag = product.ProductId,
+                        Font = new Font("Segoe UI", 8)
                     };
                     btnRemove.Click += (s, e) => RemoveItem((int)btnRemove.Tag);
 
-                    panel.Controls.Add(lbl);
+                    panel.Controls.Add(lblName);
+                    panel.Controls.Add(lblPrice);
+                    panel.Controls.Add(btnDecrease);
+                    panel.Controls.Add(lblQuantity);
+                    panel.Controls.Add(btnIncrease);
+                    panel.Controls.Add(lblItemTotal);
                     panel.Controls.Add(btnRemove);
                     flowLayoutPanelCart.Controls.Add(panel);
-
-                    // Force immediate UI update
-                    panel.Refresh();
-                    Application.DoEvents();
                 }
             }
             catch (Exception ex)
@@ -123,10 +184,26 @@ namespace SDAM_Assignment
             }
         }
 
+        private void AdjustQuantity(int productId, int change)
+        {
+            try
+            {
+                CartItemsController.AdjustQuantity(buyer.Id, productId, change);
+                LoadCart();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating quantity: {ex.Message}",
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+            }
+        }
+
         private void RemoveItem(int productId)
         {
             CartItemsController.RemoveFromCart(buyer.Id, productId);
-            LoadCart(); // Refresh the cart
+            LoadCart();
         }
 
         private void btnCheckout_Click(object sender, EventArgs e)
@@ -142,7 +219,5 @@ namespace SDAM_Assignment
             MessageBox.Show("Cart has been cleared.");
             LoadCart();
         }
-
-       
     }
 }

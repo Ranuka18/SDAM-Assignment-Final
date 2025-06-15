@@ -12,6 +12,7 @@ using System.IO;
 using System.Data.Common;
 using SDAM_Assignment.Helpers;
 using SDAM_Assignment.Controllers;
+using System.Diagnostics;
 
 
 namespace SDAM_Assignment
@@ -26,6 +27,7 @@ namespace SDAM_Assignment
             InitializeComponent();
             FormStyler.ApplyTheme(this);
             this.seller = seller;
+            this.currentSeller = seller; // Initialize currentSeller
             LoadProductsBySeller();
         }
 
@@ -55,7 +57,10 @@ namespace SDAM_Assignment
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error loading products: " + ex.Message);
+                MessageBox.Show("Error loading products: " + ex.Message,
+                              "Error",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Error);
             }
         }
 
@@ -80,14 +85,19 @@ namespace SDAM_Assignment
                 SizeMode = PictureBoxSizeMode.StretchImage
             };
 
-            if (!string.IsNullOrEmpty(product.ImagePath) && File.Exists(product.ImagePath))
+            // Load image from byte array
+            if (product.Image_data != null && product.Image_data.Length > 0)
             {
                 try
                 {
-                    picture.Image = Image.FromFile(product.ImagePath);
+                    using (MemoryStream ms = new MemoryStream(product.Image_data))
+                    {
+                        picture.Image = Image.FromStream(ms);
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine($"Error loading image: {ex.Message}");
                     picture.Image = null;
                 }
             }
@@ -95,7 +105,7 @@ namespace SDAM_Assignment
             Label lblName = new Label
             {
                 Text = product.Name,
-                Top = picture.Bottom + 5,
+                Top = 170, // Fixed position below picture box
                 Left = 10,
                 Width = 180,
                 Font = new Font("Segoe UI", 10, FontStyle.Bold)
@@ -104,7 +114,7 @@ namespace SDAM_Assignment
             Label lblDesc = new Label
             {
                 Text = product.Description,
-                Top = lblName.Bottom + 5,
+                Top = 195,
                 Left = 10,
                 Width = 180,
                 Height = 40,
@@ -114,7 +124,7 @@ namespace SDAM_Assignment
             Label lblPrice = new Label
             {
                 Text = $"Rs. {product.Price:F2}",
-                Top = lblDesc.Bottom + 5,
+                Top = 240,
                 Left = 10,
                 Width = 180,
                 ForeColor = Color.Green,
@@ -126,7 +136,7 @@ namespace SDAM_Assignment
                 Text = "Edit",
                 Width = 80,
                 Height = 30,
-                Top = lblPrice.Bottom + 10,
+                Top = 280,
                 Left = 10,
                 BackColor = Color.LightBlue
             };
@@ -136,7 +146,7 @@ namespace SDAM_Assignment
                 EditProductForm editForm = new EditProductForm(product);
                 if (editForm.ShowDialog() == DialogResult.OK)
                 {
-                    LoadProductsBySeller(); 
+                    LoadProductsBySeller();
                 }
             };
 
@@ -145,78 +155,21 @@ namespace SDAM_Assignment
                 Text = "Delete",
                 Width = 80,
                 Height = 30,
-                Top = lblPrice.Bottom + 10,
+                Top = 280,
                 Left = 100,
                 BackColor = Color.IndianRed,
                 ForeColor = Color.White
             };
 
-            btnDelete.Click += (s, e) =>
-            {
-                if (ConfirmDeletion(product.Name))
-                {
-                    int orderCount = OrderController.GetOrderCountForProduct(product.ProductId);
-
-                    if (orderCount == 0)
-                    {
-                        if (SellerController.DeleteProduct(product.ProductId))
-                        {
-                            MessageBox.Show("Product deleted successfully.", "Success",
-                                          MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            LoadProductsBySeller();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to delete product.", "Error",
-                                          MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                    else
-                    {
-                        var result = MessageBox.Show(
-                            $"This product has {orderCount} active order(s).\n\n" +
-                            "Would you like to manage these orders before deletion?",
-                            "Active Orders Exist",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Warning);
-
-                        if (result == DialogResult.Yes)
-                        {
-                            using (var orderForm = new SellerOrdersForm(currentSeller, product.ProductId))
-                            {
-                                if (orderForm.ShowDialog() == DialogResult.OK)
-                                {
-                                    // Try deleting again after order resolution
-                                    if (SellerController.DeleteProduct(product.ProductId))
-                                    {
-                                        MessageBox.Show("Product deleted successfully after order resolution.",
-                                                      "Success",
-                                                      MessageBoxButtons.OK,
-                                                      MessageBoxIcon.Information);
-                                        LoadProductsBySeller();
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("Failed to delete product after order resolution.",
-                                                      "Error",
-                                                      MessageBoxButtons.OK,
-                                                      MessageBoxIcon.Error);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
+            btnDelete.Click += (s, e) => HandleProductDeletion(product);
 
             Button btnViewReviews = new Button
             {
                 Text = "View Reviews",
                 Width = 100,
                 Height = 30,
-                Top = btnDelete.Bottom + 5,
-                Left = (card.Width - 100) / 2,
+                Top = 320,
+                Left = 50,
                 BackColor = Color.LightBlue
             };
 
@@ -231,10 +184,57 @@ namespace SDAM_Assignment
             card.Controls.Add(lblDesc);
             card.Controls.Add(lblPrice);
             card.Controls.Add(btnEdit);
-            card.Controls.Add(btnViewReviews);
             card.Controls.Add(btnDelete);
+            card.Controls.Add(btnViewReviews);
 
             return card;
+        }
+
+        private void HandleProductDeletion(Product product)
+        {
+            if (!ConfirmDeletion(product.Name)) return;
+
+            int orderCount = OrderController.GetOrderCountForProduct(product.ProductId);
+
+            if (orderCount == 0)
+            {
+                if (SellerController.DeleteProduct(product.ProductId))
+                {
+                    MessageBox.Show("Product deleted successfully.", "Success",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadProductsBySeller();
+                }
+                else
+                {
+                    MessageBox.Show("Failed to delete product.", "Error",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                var result = MessageBox.Show(
+                    $"This product has {orderCount} active order(s).\n\n" +
+                    "Would you like to manage these orders before deletion?",
+                    "Active Orders Exist",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (result == DialogResult.Yes)
+                {
+                    using (var orderForm = new SellerOrdersForm(currentSeller, product.ProductId))
+                    {
+                        if (orderForm.ShowDialog() == DialogResult.OK &&
+                            SellerController.DeleteProduct(product.ProductId))
+                        {
+                            MessageBox.Show("Product deleted successfully after order resolution.",
+                                          "Success",
+                                          MessageBoxButtons.OK,
+                                          MessageBoxIcon.Information);
+                            LoadProductsBySeller();
+                        }
+                    }
+                }
+            }
         }
 
         private bool ConfirmDeletion(string productName)
@@ -244,9 +244,13 @@ namespace SDAM_Assignment
                                  MessageBoxButtons.YesNo,
                                  MessageBoxIcon.Question) == DialogResult.Yes;
         }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            LoadProductsBySeller();
+        }
     }
 }
-
 
 
 

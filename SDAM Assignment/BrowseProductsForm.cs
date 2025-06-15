@@ -20,26 +20,85 @@ namespace SDAM_Assignment
         {
             InitializeComponent();
             FormStyler.ApplyTheme(this);
-            this.buyer = buyer;
+            this.buyer = buyer ?? throw new ArgumentNullException(nameof(buyer));
 
-            BuyerController.LoadProductCards(flowLayoutPanelProducts, buyer.Id);
+            LoadProducts();
+        }
+
+        private void LoadProducts()
+        {
+            try
+            {
+                BuyerController.LoadProductCards(flowLayoutPanelProducts, buyer.Id);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading products: {ex.Message}", "Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public bool AddToCart(Product product, int quantity = 1)
         {
-            return CartItemsController.AddToCart(buyer.Id, product.ProductId, quantity);
+            if (product == null)
+            {
+                MessageBox.Show("Invalid product selected", "Error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (quantity < 1)
+            {
+                MessageBox.Show("Quantity must be at least 1", "Warning",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            try
+            {
+                return CartItemsController.AddToCart(buyer.Id, product.ProductId, quantity);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding to cart: {ex.Message}", "Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
 
         public List<CartItem> GetCartItems()
         {
-            return CartItemsController.GetCartItems(buyer.Id);
+            try
+            {
+                return CartItemsController.GetCartItems(buyer.Id);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading cart items: {ex.Message}", "Error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return new List<CartItem>();
+            }
         }
 
         public bool RemoveFromCart(int productId)
         {
-            return CartItemsController.RemoveFromCart(buyer.Id, productId);
+            try
+            {
+                return CartItemsController.RemoveFromCart(buyer.Id, productId);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error removing item from cart: {ex.Message}", "Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
 
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            flowLayoutPanelProducts.Controls.Clear();
+            LoadProducts();
+        }
     }
 }
 

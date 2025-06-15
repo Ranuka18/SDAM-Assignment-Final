@@ -15,7 +15,7 @@ namespace SDAM_Assignment
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public string ImagePath { get; set; }
+        public byte[] Image_data { get; set; }
 
         private static string connectionString = "server=localhost;user=root;password=;database=marketplace;";
 
